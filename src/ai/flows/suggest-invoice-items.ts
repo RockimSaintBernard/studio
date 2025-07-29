@@ -1,5 +1,4 @@
 // src/ai/flows/suggest-invoice-items.ts
-'use server';
 
 /**
  * @fileOverview This file defines a Genkit flow for suggesting invoice items based on keywords.

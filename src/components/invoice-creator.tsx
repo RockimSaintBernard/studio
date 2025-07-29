@@ -38,7 +38,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
-import { suggestInvoiceItems, type SuggestInvoiceItemsOutput } from "@/ai/flows/suggest-invoice-items";
+import type { SuggestInvoiceItemsOutput } from "@/ai/flows/suggest-invoice-items";
 import { cn } from "@/lib/utils";
 
 interface LineItem {
@@ -131,7 +131,17 @@ export default function InvoiceCreator() {
     setIsAISuggesting(true);
     setAISuggestions([]);
     try {
-      const result = await suggestInvoiceItems({ keywords: aiKeywords });
+      const response = await fetch('/api/suggest', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ keywords: aiKeywords }),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const result: SuggestInvoiceItemsOutput = await response.json();
       setAISuggestions(result.suggestions);
     } catch (error) {
       console.error("AI Suggestion Error:", error);
